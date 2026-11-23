@@ -1,0 +1,32 @@
+{
+	admin off
+	auto_https off
+	persist_config off
+	log {
+		level WARN
+	}
+}
+
+:{$PORT} {
+	# Railway's health check: mcp-proxy's own /healthz needs the bearer token and
+	# answers 204, so Caddy adds the token here and turns a 2xx into a plain 200.
+	handle /healthz {
+		reverse_proxy 127.0.0.1:{$MCP_PROXY_INTERNAL_PORT} {
+			header_up Host 127.0.0.1:{$MCP_PROXY_INTERNAL_PORT}
+			header_up Authorization "Bearer {$MCP_PROXY_AUTH_TOKEN}"
+			@ok status 2xx
+			handle_response @ok {
+				respond "ok" 200
+			}
+		}
+	}
+
+	# Everything else goes to mcp-proxy, which checks the client's bearer token.
+	# The MCP SDK rejects a public Host on a loopback listener, so send the loopback one.
+	handle {
+		reverse_proxy 127.0.0.1:{$MCP_PROXY_INTERNAL_PORT} {
+			header_up Host 127.0.0.1:{$MCP_PROXY_INTERNAL_PORT}
+			flush_interval -1
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "/opt/mcp-servers/venv/bin/mcp-server-fetch",
+      "args": ["--no-readability-js"]
+    },
+    "time": {
+      "command": "/opt/mcp-servers/venv/bin/mcp-server-time",
+      "args": ["--local-timezone", "UTC"]
+    },
+    "memory": {
+      "command": "node",
+      "args": ["/opt/mcp-servers/node_modules/@modelcontextprotocol/server-memory/dist/index.js"],
+      "env": { "MEMORY_FILE_PATH": "/data/memory.jsonl" }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "mcp-proxy-bundled-servers",
+  "private": true,
+  "dependencies": {
+    "@modelcontextprotocol/server-memory": "2.2.1"
+  }
+}
