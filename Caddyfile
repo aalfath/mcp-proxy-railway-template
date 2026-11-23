@@ -3,7 +3,7 @@
 	auto_https off
 	persist_config off
 	log {
-		level WARN
+		level ERROR
 	}
 }
 
