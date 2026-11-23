@@ -8,9 +8,11 @@
 }
 
 :{$PORT} {
-	# Railway's health check: mcp-proxy's own /healthz needs the bearer token and
-	# answers 204, so Caddy adds the token here and turns a 2xx into a plain 200.
+	# Railway's health check. mcp-proxy's own /status needs the bearer token (and
+	# named-server mode has no root /healthz), so Caddy asks /status with the token
+	# and answers a bare 200 "ok" without passing the status body on.
 	handle /healthz {
+		rewrite * /status
 		reverse_proxy 127.0.0.1:{$MCP_PROXY_INTERNAL_PORT} {
 			header_up Host 127.0.0.1:{$MCP_PROXY_INTERNAL_PORT}
 			header_up Authorization "Bearer {$MCP_PROXY_AUTH_TOKEN}"
