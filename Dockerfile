@@ -18,7 +18,11 @@ RUN uv venv --quiet --python /usr/local/bin/python3 /opt/mcp-servers/venv \
 COPY servers/servers.json Caddyfile start.sh /etc/mcp-proxy/
 RUN chmod 755 /etc/mcp-proxy/start.sh
 
+# Railway hosts show dozens of CPUs inside a 1 vCPU service: keep thread pools and
+# glibc malloc arenas small so the service stays well inside 0.5 GB.
 ENV PORT=8080 \
+    GOMAXPROCS=2 \
+    MALLOC_ARENA_MAX=2 \
     MCP_PROXY_INTERNAL_PORT=8096 \
     DATA_DIR=/data \
     PYTHONUNBUFFERED=1 \
